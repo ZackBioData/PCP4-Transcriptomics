@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-
+from gprofiler import GProfiler
 
 df = pd.read_csv("GSE293745_gene_reads_count.anno.csv")  
 
@@ -36,7 +36,6 @@ print("----------------------------------------------------------------")
 upregulated = df[df['log2_fc'] > 1]['gene_symbol'].dropna().unique().tolist()
 downregulated = df[df['log2_fc'] < -1]['gene_symbol'].dropna().unique().tolist()
 
-from gprofiler import GProfiler
 
 gp = GProfiler(return_dataframe=True)
 
@@ -50,6 +49,7 @@ go_results_down = gp.profile(organism='hsapiens', query=downregulated, sources=[
 print("Top GO terms in upregulated genes:")
 print(go_results_up[['name', 'p_value', 'term_size', 'intersection_size']].head())
 print("----------------------------------------------------------------")
+
 print("\nTop GO terms in downregulated genes:")
 print(go_results_down[['name', 'p_value', 'term_size', 'intersection_size']].head())
 print("----------------------------------------------------------------")
@@ -63,7 +63,6 @@ top200_genes = upregulated['gene_symbol'].dropna().drop_duplicates().head(200)
 
 # Save to .txt
 top200_genes.to_csv("top200_upregulated.txt", index=False, header=False)
-df[df["gene_symbol"] == "EZH2"]
 print(df[df['gene_symbol'].str.contains("EZH2", case=False, na=False)])
 
 print("----------------------------------------------------------------")
@@ -79,4 +78,3 @@ top200_down_genes.to_csv("top200_downregulated.txt", index=False, header=False)
 # preview to see if it worked
 print("Top downregulated genes:")
 print(top200_down_genes.head())
-
